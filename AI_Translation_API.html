@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API – Dokumentacja serwisu tłumaczeń</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+  <style>
+    input:focus,
+    button:focus,
+    textarea:focus {
+      outline: none;
+      box-shadow: none;
+      border-color: inherit;
+    }
+  
+    .token-label {
+      white-space: nowrap;
+    }
+  
+    .token-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #003d3f;
+      border-left: 8px solid #5ffaf0;
+      padding: 10px 15px;
+      margin: 22px 0;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+    }
+  
+    .token-input {
+      padding: 10.5px 15px;
+      font-size: 14px;
+      border: 1px solid #5ffaf0;
+      border-radius: 5px;
+      flex: 1;
+      background-color: transparent;
+      color: #fff;
+      font-family: "Lexend", sans-serif;
+    }
+  
+    .token-input:focus {
+      border: 1px solid #5ffaf0 !important;
+    }
+  
+    .token-input::placeholder {
+      color: #fff;
+      opacity: 0.85;
+    }
+  
+    .token-button {
+      padding: 6px 18px;
+      font-size: 15px;
+      background: #5ffaf0;
+      color: #003d3f;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 40px;
+      max-height: 40px;
+      font-family: "Lexend", sans-serif;
+      min-width: 130px;
+    }
+  
+    .token-button:hover {
+      background: #a8fff9;
+    }
+  
+    .logo-svg {
+      position: absolute;
+      left: 50px;
+      top: 25px;
+      width: 40px;
+      height: auto;
+      z-index: 999;
+    }
+  
+    .logo-svg svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  
+    .container {
+      max-width: 1300px;
+      background: #05091f;
+      padding: 50px;
+      width: 100%;
+      border-left: 1px solid #252d5d;
+      border-right: 1px solid #252d5d;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      position: relative;
+    }
+  
+    .image-container {
+      width: calc(100% + 100px);
+      margin-left: -50px;
+      margin-right: -50px;
+      height: 250px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color: #000;
+      margin-top: -50px;
+      margin-bottom: 50px;
+      border-bottom: 1px solid #252d5d;
+      position: relative;
+    }
+  
+    .image-container img {
+      height: 100%;
+      width: auto;
+      display: block;
+      margin: 0;
+    }
+  
+    .copy-btn {
+      position: absolute;
+      display: flex;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      z-index: 2;
+      opacity: 0.65;
+      transition: opacity 0.15s;
+      border-radius: 4px;
+    }
+  
+    .copy-btn:hover,
+    .copy-btn:focus {
+      opacity: 1;
+      background: #003d3f;
+    }
+  
+    .copy-btn svg {
+      display: block;
+      width: 30px;
+      height: 30px;
+    }
+  
+    .copy-btn.inline {
+      position: static;
+      margin-left: 10px;
+      vertical-align: middle;
+      top: auto;
+      right: auto;
+      opacity: 0.7;
+    }
+  
+    .copy-btn.inline:hover,
+    .copy-btn.inline:focus {
+      opacity: 1;
+      background: #003d3f;
+    }
+  
+    .copied-msg {
+      position: absolute;
+      top: 15px;
+      right: 80px;
+      font-size: 13px;
+      color: #5ffaf0;
+      background: none;
+      pointer-events: none;
+      z-index: 9;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+    }
+  
+    pre .copied-msg {
+      top: 12px !important; 
+    }
+  
+    .endpoint-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+  
+    pre {
+      position: relative !important;
+    }
+  
+    html {
+      scroll-behavior: smooth;
+    }
+  
+    body {
+      font-family: "Lexend", sans-serif;
+      margin: 0; 
+      padding: 0;
+      background: #05091f;
+      color: #c3cad5;
+      line-height: 200%;
+      font-weight: 300;
+      transition: background 0.2s, color 0.2s;
+    }
+  
+    .layout-wrapper {
+      display: flex;
+      justify-content: center;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+  
+    .toc-container {
+      width: 300px;
+      flex-shrink: 0;
+      background: #05091f;
+      padding: 25px;
+      align-self: flex-start;
+      position: sticky;
+      top: 0px;
+      height: max-content;
+    }
+  
+    .toc-container h2 {
+      font-size: 16px;
+      margin-top: 0;
+      margin-bottom: 18px;
+      color: #ffffff;
+      border: none;
+      padding: 0;
+      letter-spacing: 0.02em;
+      margin-left: 20px;
+    }
+  
+    .toc-container ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+  
+    .toc-container li {
+      margin-bottom: 4px;
+      margin-left: 0px !important;
+    }
+  
+    .toc-container a {
+      color: #c3cad5;
+      text-decoration: none;
+      font-size: 15px;
+      transition: color 0.15s;
+      font-weight: 300;
+      display: block;
+      padding: 5px 20px 5px 20px;
+      border-radius: 4px;
+      border-left: 0 solid #05091f;
+      transition: border-left-width 0.1s ease;
+      transition: border-left-color 0.1s ease;
+    }
+  
+    .toc-container a:hover {
+      color: #fff;
+      background: #003d3f;
+      border-left: 4px solid #5ffaf0;
+    }
+  
+    .toc-container a.active {
+      color: #fff;
+      font-weight: 500;
+    }
+  
+    h1, h2, h3 {
+      color: #ffffff;
+      letter-spacing: 0.02em;
+      font-weight: 500;
+    }
+  
+    h1 {
+      margin-bottom: 0.2em;
+      font-size: 28px;
+    }
+  
+    h2 {
+      border-bottom: 1px solid #252d5d;
+      padding-bottom: 20px;
+      font-size: 22px;
+      padding-top: 80px;
+    }
+  
+    h3 {
+      padding-bottom: 10px;
+      font-size: 20x;
+      margin-top: 60px;
+    }
+  
+    b {
+      color: #fff;
+    }
+  
+    pre, code {
+      background: #05091f;
+      color: #5ffaf0;
+      font-family: font-family: "Roboto Mono", monospace;
+      border-radius: 8px;
+    }
+  
+    pre {
+      padding: 15px 20px;
+      border: 1px solid #fff;
+      overflow-x: auto;
+      margin-bottom: 1.5em;
+      margin-top: 0.5em;
+      font-size: 14px;
+    }
+  
+    code {
+      padding: 5px 10px;
+      background-color: transparent;
+      color: #fff;
+    }
+  
+    .no-wrap {
+      white-space: nowrap;
+    }
+  
+    .tip code, 
+    p code, 
+    li code, 
+    .token-container code {
+      font-size: 13px;
+      margin-left: 4px;
+      margin-right: 4px;
+      border: 1px solid #5ffaf0;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+  
+    .label {
+      font-weight: 600;
+      color: #5ffaf0;
+      margin-bottom: 20px;
+      margin-top: 50px;
+    }
+  
+    .tip {
+      background: #003d3f;
+      border-left: 8px solid #5ffaf0;
+      padding: 10px 15px;
+      margin: 22px 0;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+    }
+  
+    ul {
+      line-height: 200%;
+    }
+  
+    li {
+      margin-left: -25px;
+    }
+  
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: #05091f;
+      margin: 18px 0 22px 0;
+      color: #ffffff;
+    }
+  
+    th, td {
+      border: 1px solid #252d5d;
+      padding: 10px 12px;
+      text-align: left;
+      word-break: break-word;
+      font-size: 15px;
+      font-weight: 400;
+    }
+  
+    th {
+      color: #ffffff;
+    }
+  
+    .lang-codes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 0.7em;
+    }
+  
+    .lang-badge {
+      color: #fff;
+      border-radius: 6px;
+      padding: 6px 13px;
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      display: inline-block;
+      border: 1px dashed #5ffaf0;
+    }
+  
+    @media (max-width: 1240px) {
+      .layout-wrapper {
+        max-width: 100vw;
+      }
+  
+      .toc-container {
+        margin-right: 14px;
+        padding: 18px 8px 18px 12px;
+        width: 220px;
+      }
+    }
+  
+    @media (max-width: 1130px) {
+      .toc-container {
+        display: none;
+      }
+  
+      .container {
+        max-width: 100%;
+      }
+  
+      .layout-wrapper {
+        max-width: 100vw;
+        justify-content: center;
+      }
+    }
+  
+    @media (max-width: 600px) {
+      .container { padding: 25px 25px; }
+      .image-container { margin-top: -25px; }
+      h1 { font-size: 24px; }
+      table { font-size: 14px; }
+      .logo-svg { left: 25px; }
+    }
+  
+    @media (max-width: 900px) {
+      .token-container { flex-direction: column; padding: 25px; gap: 20px; }
+      .token-label { margin-right: auto; }
+      .copied-msg { color: transparent; }
+    }
+  
+    .input-wrapper { 
+      display: flex; 
+      gap: 12px; 
+      width: 100%;
+    }
+  
+    table pre {
+      max-width: 400px;
+      overflow-x: auto;
+      white-space: pre;
+      word-break: normal;
+    }
+  
+    pre code {
+      padding: 5px 0px !important;
+    }
+  
+    @media (max-width: 900px) {
+      table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+  
+      table pre {
+        max-width: 100% !important;
+      }
+    }
+  
+    @media (max-width: 500px) {
+      .input-wrapper { flex-direction: column; gap: 20px; }
+      .token-label { white-space: normal; }
+      .image-container { height: 150px; }
+    }
+  
+    td > pre > code {
+      padding: 5px 35px !important;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="layout-wrapper">
+    <nav class="toc-container">
+      <h2 style="color:#5ffaf0; font-size: 18px;">Spis treści</h2>
+      <ul>
+        <li><a href="#szybki-start">Szybki start</a></li>
+        <li><a href="#endpoint">Endpoint i autoryzacja</a></li>
+        <li><a href="#jezyki">Obsługiwane języki</a></li>
+        <li><a href="#struktura-zapytan">Struktura zapytań</a></li>
+        <li><a href="#kontekst">Dodawanie kontekstu do tłumaczenia</a></li>
+        <li><a href="#tlumaczenia-html">Tłumaczenia HTML</a></li>
+        <li><a href="#struktura-odpowiedzi">Struktura odpowiedzi</a></li>
+        <li><a href="#przyklady">Przykłady zapytań i odpowiedzi</a></li>
+        <li><a href="#bledy">Błędy</a></li>
+        <li><a href="#uwagi">Ograniczenia i uwagi</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <div class="logo-svg">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+          <defs>
+            <style>
+              .st0 { fill: #fff; }
+            </style>
+          </defs>
+          <path class="st0" d="M198.3,98.3v45.4h72.3v158h58.8v-158h72.3v-45.4h-203.4ZM228.8,379.5C97.9,360,0,287.4,0,200S45.4,87.4,114.3,53.8v89.1c-33.6,25.2-53.8,58.8-53.8,94.1,0,66.9,71.6,123.8,168.3,142.5ZM600,200c0,60.5-45.4,112.6-114.3,146.2v-89.1c33.6-25.2,53.8-58.8,53.8-94.1,0-67-71.7-122.2-168.6-142.6,131.1,19.5,229.1,92.1,229.1,179.6Z"/>
+        </svg>
+      </div>
+      <div class="image-container">
+        <img src="https://1236554drs4231112876vccf4-pawel.s3.eu-north-1.amazonaws.com/translations_banner.jpg" alt="banner">
+      </div>
+    <h1>AI Translation API</h1>
+    <p>Usługa tłumaczenia tekstów z języka polskiego na <b>15 języków obcych</b>, oparta na <b>fine-tune’owanym</b> modelu GPT-4o od OpenAI, zoptymalizowanym pod kątem zadań tłumaczeniowych. API umożliwia tłumaczenie <b>pojedynczych tekstów</b> oraz <b>całych batchy</b>, wspiera tłumaczenie z wykorzystaniem dodatkowego <b>kontekstu</b> oraz obsługuje treści z zachowaną <b>strukturą znaczników HTML</b>.</p>
+
+    <h2 id="szybki-start">Szybki start</h2>
+    <ol>
+      <li>Uzyskaj <b>token autoryzacyjny</b> od administratora (sekcja "Kontakt").</li>
+      <li>Prześlij teksty do tłumaczenia w żądaniu <b>POST</b> na endpoint API.</li>
+      <li><b>Odbierz tłumaczenia</b> i wykorzystaj je w swojej aplikacji.</li>
+    </ol>
+
+    <h2 id="endpoint">Endpoint i autoryzacja</h2>
+    <div class="label">Endpoint (POST):</div>
+    <div class="endpoint-box">
+      <pre style="margin:0;"><code>https://translation-service.pmroz.workers.dev</code></pre>
+      <button class="copy-btn inline" title="Kopiuj endpoint">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 -960 960 960" width="30px" fill="#ffffff"><path d="M361.54-280q-25.94 0-43.74-17.8T300-341.54v-430.77q0-25.94 17.8-43.74t43.74-17.8h310.77q25.94 0 43.74 17.8t17.8 43.74v430.77q0 25.94-17.8 43.74T672.31-280H361.54Zm0-36.92h310.77q9.23 0 16.92-7.7 7.69-7.69 7.69-16.92v-430.77q0-9.23-7.69-16.92-7.69-7.69-16.92-7.69H361.54q-9.23 0-16.92 7.69-7.7 7.69-7.7 16.92v430.77q0 9.23 7.7 16.92 7.69 7.7 16.92 7.7ZM247.69-166.15q-25.94 0-43.74-17.8t-17.8-43.74v-467.69h36.93v467.69q0 9.23 7.69 16.92 7.69 7.69 16.92 7.69h347.69v36.93H247.69Zm89.23-150.77v-480 480Z"/></svg>
+      </button>
+    </div>
+    <ul>
+      <li>Wszystkie zapytania wymagają nagłówka <code class="no-wrap">Authorization: Bearer &lt;TOKEN&gt;</code>.</li>
+      <li>Brak ważnego tokenu skutkuje odpowiedzią <b>401 Unauthorized</b>.</li>
+    </ul>
+
+    <h2 id="jezyki">Obsługiwane języki</h2>
+    <div class="lang-codes">
+      <div class="lang-badge">en-US</div>
+      <div class="lang-badge">bg-BG</div>
+      <div class="lang-badge">cs-CZ</div>
+      <div class="lang-badge">de-DE</div>
+      <div class="lang-badge">es-ES</div>
+      <div class="lang-badge">fr-FR</div>
+      <div class="lang-badge">hu-HU</div>
+      <div class="lang-badge">it-IT</div>
+      <div class="lang-badge">lt-LT</div>
+      <div class="lang-badge">nl-NL</div>
+      <div class="lang-badge">ro-RO</div>
+      <div class="lang-badge">ru-RU</div>
+      <div class="lang-badge">sk-SK</div>
+      <div class="lang-badge">tr-TR</div>
+      <div class="lang-badge">uk-UA</div>
+    </div>
+    <div class="tip">
+      Wartość <code>lang</code> powinna być tablicą z kodami języków lub stringiem <code>"all"</code> dla tłumaczenia na wszystkie dostępne języki.
+    </div>
+
+    <h2 id="struktura-zapytan">Struktura zapytań</h2>
+    <h3>Pojedynczy tekst</h3>
+    <pre><code>{
+  "text": "Kierowca potwierdził rozładunek.",
+  "lang": ["en-US", "de-DE"]
+}</code></pre>
+    <div class="tip">Możesz dodać opcjonalny <code>context</code> dla pojedynczego tłumaczenia:</div>
+    <pre><code>{
+  "text": "Hakowiec",
+  "context": "typ pojazdu",
+  "lang": ["fr-FR"]
+}</code></pre>
+
+    <h3>Wiele tekstów (batch)</h3>
+    <div class="tip">
+      Każdy obiekt <code>translations</code> wymaga co najmniej pola <code>text</code>, opcjonalnie może zawierać <code>context</code>.
+    </div>
+    <pre><code>{
+  "translations": [
+    { "text": "Brak wymaganych dokumentów do przetworzenia faktury." },
+    { "text": "Włączenie dostępu do giełdy.", "context": "Giełda jako jeden z produktów platformy Trans.eu" },
+    { "text": "Okno czasowe nie zostało utworzone." }
+  ],
+  "lang": "all"
+}</code></pre>
+
+    <h2 id="kontekst">Dodawanie kontekstu do tłumaczenia (context)</h2>
+    <p>
+      Możesz dodać dodatkowy kontekst do tłumaczenia zarówno dla pojedynczego tekstu, jak i każdego elementu batcha osobno. Kontekst pozwala lepiej zrozumieć specyfikę tekstu i precyzyjniej dobrać tłumaczenie.
+    </p>
+    <pre><code>{
+  "text": "Fracht został usunięty.",
+  "context": "Fracht jako oferta ładunku",
+  "lang": ["it-IT"]
+}</code></pre>
+    <pre><code>{
+  "translations": [
+    { "text": "Nie dodano żadnych kosztów." },
+    { "text": "Magazyn", "context": "miejsce składowania towarów" }
+  ],
+  "lang": ["es-ES"]
+}</code></pre>
+
+    <h2 id="tlumaczenia-html">Tłumaczenia HTML</h2>
+    <p>
+      Przesyłana treść HTML powinna być zserializowana i zminifikowana — wystarczy sama struktura znaczników (np. <code>&lt;p&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;a&gt;</code>), bez nagłówka dokumentu, deklaracji <code>&lt;!DOCTYPE&gt;</code> czy tagów <code>&lt;html&gt;</code> i <code>&lt;body&gt;</code>. Taką treść należy przesłać jako wartość pola <code>text</code>.
+    </p>
+    <div class="tip">
+      Pamiętaj, by przesyłać <b>prawidłowo zminifikowany i zserializowany HTML</b>.
+    </div>
+    <pre><code>{
+  "text": "&lt;h2&gt;List przewozowy&lt;/h2&gt;&lt;p&gt;Pobierz list przewozowy z &lt;a href=\"https://test.com\"&gt;tej strony&lt;/a&gt;.&lt;/p&gt;",
+  "lang": ["en-US"]
+}</code></pre>
+    <pre><code>{
+  "translations": [
+    { "text": "&lt;p&gt;Potwierdzenie cesji faktury w ramach usługi &lt;strong&gt;QuickPay&lt;/strong&gt;.&lt;/p&gt;" },
+    { "text": "&lt;div&gt;Zaktualizowano domyślne wymaganie udostępnienia sygnału GPS.&lt;/div&gt;" }
+  ],
+  "lang": "all"
+}</code></pre>
+
+    <h2 id="struktura-odpowiedzi">Struktura odpowiedzi</h2>
+    <p>Odpowiedź zawsze zawiera klucz <code>translations</code> z tablicą tłumaczeń. Każdy obiekt odpowiada jednemu tłumaczonemu tekstowi i zawiera pary <code>kod języka: tłumaczenie</code>, zawsze z zachowaniem <code>pl-PL</code> na górze.</p>
+    <pre><code>{
+  "translations": [
+    {
+      "pl-PL": "Data zamówienia produktu.",
+      "en-US": "Product order date.",
+      "de-DE": "Bestelldatum des Produkts."
+    },
+    {
+      "pl-PL": "Podana stała trasa już istnieje.",
+      "en-US": "The fixed route already exists.",
+      "de-DE": "Die feste Route existiert bereits."
+    },
+    {
+      "pl-PL": "Dodaj do giełdy prywatnej.",
+      "en-US": "Add to private exchange.",
+      "de-DE": "Zur privaten Börse hinzufügen."
+    }
+  ]
+}</code></pre>
+
+    <h2 id="przyklady">Przykłady zapytań i odpowiedzi (curl)</h2>
+    <div class="token-container">
+      <span class="token-label">Dla wygody zastąp <code>&lt;TOKEN&gt;</code> swoją wartością:</span>
+      <div class="input-wrapper">
+      <input type="text" class="token-input" id="token-input" placeholder="Wprowadź token" />
+      <button class="token-button" id="token-button">Zastąp</button>
+      </div>
+    </div>
+    <h3>Pojedyncze tłumaczenie (en-US, de-DE)</h3>
+    <pre>
+      <button class="copy-btn" title="Kopiuj">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#ffffff"><path d="M361.54-280q-25.94 0-43.74-17.8T300-341.54v-430.77q0-25.94 17.8-43.74t43.74-17.8h310.77q25.94 0 43.74 17.8t17.8 43.74v430.77q0 25.94-17.8 43.74T672.31-280H361.54Zm0-36.92h310.77q9.23 0 16.92-7.7 7.69-7.69 7.69-16.92v-430.77q0-9.23-7.69-16.92-7.69-7.69-16.92-7.69H361.54q-9.23 0-16.92 7.69-7.7 7.69-7.7 16.92v430.77q0 9.23 7.7 16.92 7.69 7.7 16.92 7.7ZM247.69-166.15q-25.94 0-43.74-17.8t-17.8-43.74v-467.69h36.93v467.69q0 9.23 7.69 16.92 7.69 7.69 16.92 7.69h347.69v36.93H247.69Zm89.23-150.77v-480 480Z"/></svg>
+      </button>
+<code>curl -X POST https://translation-service.pmroz.workers.dev \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Podaj czas, w którym pojazd dotarł do końcowego punktu rozładunku.",
+    "lang": ["en-US", "de-DE"]
+}'</code></pre>
+    <div class="label">Przykładowa odpowiedź:</div>
+    <pre><code>{
+  "translations": [
+    {
+      "pl-PL": "Podaj czas, w którym pojazd dotarł do końcowego punktu rozładunku.",
+      "en-US": "Enter the time the vehicle reached the final unloading point.",
+      "de-DE": "Geben Sie die Zeit ein, zu der das Fahrzeug den Endentladepunkt erreicht hat."
+    }
+  ]
+}</code></pre>
+
+    <h3>Batch tłumaczeń (all) wraz z placeholderem na zmienną (variable).</h3>
+    <pre>
+      <button class="copy-btn" title="Kopiuj">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#ffffff"><path d="M361.54-280q-25.94 0-43.74-17.8T300-341.54v-430.77q0-25.94 17.8-43.74t43.74-17.8h310.77q25.94 0 43.74 17.8t17.8 43.74v430.77q0 25.94-17.8 43.74T672.31-280H361.54Zm0-36.92h310.77q9.23 0 16.92-7.7 7.69-7.69 7.69-16.92v-430.77q0-9.23-7.69-16.92-7.69-7.69-16.92-7.69H361.54q-9.23 0-16.92 7.69-7.7 7.69-7.7 16.92v430.77q0 9.23 7.7 16.92 7.69 7.7 16.92 7.7ZM247.69-166.15q-25.94 0-43.74-17.8t-17.8-43.74v-467.69h36.93v467.69q0 9.23 7.69 16.92 7.69 7.69 16.92 7.69h347.69v36.93H247.69Zm89.23-150.77v-480 480Z"/></svg>
+      </button>
+<code>curl -X POST https://translation-service.pmroz.workers.dev \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "translations": [
+      { "text": "Usunięto szablon \"{{templateName}}\"." },
+      { "text": "Numer korekty.", "context": "Numer skorygowanej faktury" },
+      { "text": "Potwierdzenie dojazdu na rozładunek." }
+    ],
+    "lang": "all"
+}'</code></pre>
+    <div class="label">Przykładowa odpowiedź:</div>
+    <div class="tip">
+      <b>Uwaga:</b> Model AI nie powinien tłumaczyć zawartości zmiennych (placeholderów). Jeśli taka sytuacja wystąpi, zgłoś to jako błąd.
+    </div>
+    <pre><code>{
+  "translations": [
+    {
+      "pl-PL": "Usunięto szablon \"{{templateName}}\".",
+      "en-US": "Template \"{{templateName}}\" has been removed.",
+      "es-ES": "Plantilla \"{{templateName}}\" eliminada.",
+      "fr-FR": "Le modèle \"{{templateName}}\" a été supprimé.",
+      "...": "..."
+    },
+    {
+      "pl-PL": "Numer korekty.",
+      "en-US": "Credit note number",
+      "es-ES": "Número de abono.",
+      "fr-FR": "Numéro de rectification",
+      "...": "..."
+    },
+    {
+      "pl-PL": "Potwierdzenie dojazdu na rozładunek.",
+      "en-US": "Confirmation of arrival for unloading.",
+      "es-ES": "Confirmación de llegada para la descarga.",
+      "fr-FR": "Confirmation de l'arrivée pour le déchargement.",
+      "...": "..."
+    }
+  ]
+}</code></pre>
+
+    <h3>Tłumaczenie HTML</h3>
+    <pre>
+      <button class="copy-btn" title="Kopiuj">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#ffffff"><path d="M361.54-280q-25.94 0-43.74-17.8T300-341.54v-430.77q0-25.94 17.8-43.74t43.74-17.8h310.77q25.94 0 43.74 17.8t17.8 43.74v430.77q0 25.94-17.8 43.74T672.31-280H361.54Zm0-36.92h310.77q9.23 0 16.92-7.7 7.69-7.69 7.69-16.92v-430.77q0-9.23-7.69-16.92-7.69-7.69-16.92-7.69H361.54q-9.23 0-16.92 7.69-7.7 7.69-7.7 16.92v430.77q0 9.23 7.7 16.92 7.69 7.7 16.92 7.7ZM247.69-166.15q-25.94 0-43.74-17.8t-17.8-43.74v-467.69h36.93v467.69q0 9.23 7.69 16.92 7.69 7.69 16.92 7.69h347.69v36.93H247.69Zm89.23-150.77v-480 480Z"/></svg>
+      </button>
+<code>curl -X POST https://translation-service.pmroz.workers.dev \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "&lt;h2&gt;List przewozowy&lt;/h2&gt;&lt;p&gt;Pobierz list przewozowy z &lt;a href=\"https://test.com\"&gt;tej strony&lt;/a&gt;.&lt;/p&gt;",
+    "lang": ["en-US"]
+}'</code></pre>
+    <div class="label">Przykładowa odpowiedź:</div>
+    <pre><code>{
+  "translations": [
+    {
+      "pl-PL": "&lt;h2&gt;List przewozowy&lt;/h2&gt;&lt;p&gt;Pobierz list przewozowy z &lt;a href=\"https://test.com\"&gt;tej strony&lt;/a&gt;.&lt;/p&gt;",
+      "en-US": "&lt;h2&gt;Waybill&lt;/h2&gt;&lt;p&gt;Download the waybill from &lt;a href=\"https://test.com\"&gt;this page&lt;/a&gt;.&lt;/p&gt;"
+    }
+  ]
+}</code></pre>
+
+    <h3>Batch z kontekstem</h3>
+    <pre>
+      <button class="copy-btn" title="Kopiuj">
+        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#ffffff"><path d="M361.54-280q-25.94 0-43.74-17.8T300-341.54v-430.77q0-25.94 17.8-43.74t43.74-17.8h310.77q25.94 0 43.74 17.8t17.8 43.74v430.77q0 25.94-17.8 43.74T672.31-280H361.54Zm0-36.92h310.77q9.23 0 16.92-7.7 7.69-7.69 7.69-16.92v-430.77q0-9.23-7.69-16.92-7.69-7.69-16.92-7.69H361.54q-9.23 0-16.92 7.69-7.7 7.69-7.7 16.92v430.77q0 9.23 7.7 16.92 7.69 7.7 16.92 7.7ZM247.69-166.15q-25.94 0-43.74-17.8t-17.8-43.74v-467.69h36.93v467.69q0 9.23 7.69 16.92 7.69 7.69 16.92 7.69h347.69v36.93H247.69Zm89.23-150.77v-480 480Z"/></svg>
+      </button>
+<code>curl -X POST https://translation-service.pmroz.workers.dev \
+  -H "Authorization: Bearer &lt;TOKEN&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "translations": [
+      { "text": "VIN", "context": "numer identyfikacyjny pojazdu" },
+      { "text": "Wystąpił błąd podczas importowania danych." }
+    ],
+    "lang": ["de-DE"]
+}'</code></pre>
+    <div class="label">Przykładowa odpowiedź:</div>
+    <pre><code>{
+  "translations": [
+    {
+      "pl-PL": "VIN",
+      "de-DE": "Fahrgestellnummer"
+    },
+    {
+      "pl-PL": "Wystąpił błąd podczas importowania danych.",
+      "de-DE": "Beim Importieren von Daten ist ein Fehler aufgetreten."
+    }
+  ]
+}</code></pre>
+
+    <h2 id="bledy">Błędy</h2>
+    <p>Możliwe odpowiedzi:</p>
+    <table>
+      <colgroup>
+        <col style="min-width: 100px;">
+        <col style="overflow: auto !important;">
+        <col style="min-width: 200px;">
+      </colgroup>
+      <tr>
+        <th>Status</th>
+        <th>Przykładowa odpowiedź</th>
+        <th>Opis</th>
+      </tr>
+      <tr>
+        <td>401</td>
+        <td><pre><code>Unauthorized</code></pre></td>
+        <td>Brak autoryzacji lub nieprawidłowy token.</td>
+      </tr>
+      <tr>
+        <td>400</td>
+        <td><pre><code>{
+      "error": "Validation failed",
+      "details": [
+        "Missing 'lang'.",
+        "Missing or invalid 'text' in translations[1]."
+      ]
+    }</code></pre></td>
+        <td>Błąd walidacji danych wejściowych (np. brak wymaganego pola lub nieobsługiwany język).</td>
+      </tr>
+      <tr>
+        <td>503</td>
+        <td><pre><code>{
+      "error": "We’re currently unable to access the AI model for translations. Try again soon."
+    }</code></pre></td>
+        <td>Model AI do tłumaczeń jest tymczasowo niedostępny.</td>
+      </tr>
+    </table>
+
+    <h2 id="uwagi">Ograniczenia i uwagi</h2>
+    <ul>
+      <li>Tłumaczenia tylko z języka polskiego na wskazane języki.</li>
+      <li>Kod języka należy zapisywać jako <b>language tag</b> zgodnie ze specyfikacją BCP 47.</li>
+      <li>Pole <code>context</code> jest opcjonalne i może być użyte w pojedynczym tłumaczeniu oraz w batchu – dla dowolnych elementów.</li>
+      <li>Możesz przesłać do tłumaczenia zserializowany, zminifikowany HTML.</li>
+      <li>Nie ma ograniczeń co do liczby zapytań i długości tekstów (poza limitem technicznym HTTP).</li>
+      <li>Odpowiedź zawsze zawiera <code>pl-PL</code> oraz wybrane języki.</li>
+      <li>Możesz przesyłać w tekście placeholdery na zmienne (np. <code>{{name}}</code>, <code>{{userInfo}})</code>.</li>
+    </ul>
+
+    <h2 id="kontakt">Kontakt</h2>
+    <p>Osoba kontaktowa: <a href="mailto:pmroz@trans.eu" style="color: #5ffaf0; text-decoration: underline; font-weight: 400;">Paweł Mróz</a></p>
+    </div>
+  </div>
+</body>
+  <script>
+    function showCopied(btn) {
+      if (btn.parentNode.querySelector('.copied-msg')) return;
+      var msg = document.createElement('span');
+      msg.className = 'copied-msg';
+      msg.textContent = 'Skopiowano!';
+      btn.parentNode.appendChild(msg);
+      setTimeout(() => msg.remove(), 1200);
+    }
+
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => showCopied(btn));
+    }
+
+    function decodeHtmlEntities(text) {
+      var txt = document.createElement("textarea");
+      txt.innerHTML = text;
+      return txt.value;
+    }
+
+    document.querySelectorAll('pre').forEach(pre => {
+      const codeBlock = pre.querySelector('code');
+      if (!codeBlock) return;
+
+      const isCurl = codeBlock.innerText.trim().startsWith('curl');
+      if (!isCurl) return;
+
+      let btn = pre.querySelector('button.copy-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.title = 'Kopiuj';
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#ffffff"><path d="M361.54-280q-25.94 0-43.74-17.8T300-341.54v-430.77q0-25.94 17.8-43.74t43.74-17.8h310.77q25.94 0 43.74 17.8t17.8 43.74v430.77q0 25.94-17.8 43.74T672.31-280H361.54Zm0-36.92h310.77q9.23 0 16.92-7.7 7.69-7.69 7.69-16.92v-430.77q0-9.23-7.69-16.92-7.69-7.69-16.92-7.69H361.54q-9.23 0-16.92 7.69-7.7 7.69-7.7 16.92v430.77q0 9.23 7.7 16.92 7.69 7.7 16.92 7.7ZM247.69-166.15q-25.94 0-43.74-17.8t-17.8-43.74v-467.69h36.93v467.69q0 9.23 7.69 16.92 7.69 7.69 16.92 7.69h347.69v36.93H247.69Zm89.23-150.77v-480 480Z"/></svg>`;
+        pre.style.position = 'relative';
+        pre.insertBefore(btn, pre.firstChild);
+      }
+
+      if (!btn.dataset.bound) {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const text = decodeHtmlEntities(codeBlock.innerHTML);
+          copyText(text, btn);
+        });
+        btn.dataset.bound = '1';
+      }
+    });
+
+    document.querySelectorAll('.copy-btn.inline').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        let code = btn.parentNode.querySelector('code');
+        if (code) copyText(decodeHtmlEntities(code.innerHTML), btn);
+      });
+    });
+
+    (function () {
+      const inputEl = document.getElementById('token-input');
+      const button = document.getElementById('token-button');
+      if (!inputEl || !button) return;
+
+      inputEl.addEventListener('input', e => {
+        e.target.value = e.target.value.replace(/\s+/g, '');
+      });
+
+      button.addEventListener('click', () => {
+        const token = inputEl.value.replace(/\s+/g, '');
+        if (!token) return;
+
+        const replacement = 'Bearer ' + token;
+        const pattern = /Bearer\s*(?:&lt;TOKEN&gt;|<TOKEN>|[^\s'"&]+)/g;
+
+        document.querySelectorAll('code').forEach(codeEl => {
+          codeEl.innerHTML = codeEl.innerHTML.replace(pattern, replacement);
+        });
+
+        inputEl.value = '';
+
+        const originalText = button.dataset.originalText || button.textContent;
+        button.dataset.originalText = originalText;
+        button.textContent = 'Wykonano!';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 2000);
+      });
+    })();
+
+    (function () {
+      const OFFSET = 120;
+      const tocLinks = Array.from(document.querySelectorAll('.toc-container a'));
+      const sections = tocLinks
+        .map(link => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+
+      function setActiveSection() {
+        const scrollPos = window.scrollY + OFFSET;
+        let currentSection = sections[0];
+
+        for (let i = 0; i < sections.length; i++) {
+          if (sections[i].offsetTop <= scrollPos) {
+            currentSection = sections[i];
+          } else {
+            break;
+          }
+        }
+
+        tocLinks.forEach(link => {
+          const isActive = link.getAttribute('href') === `#${currentSection.id}`;
+          link.classList.toggle('active', isActive);
+        });
+      }
+
+      // Initialize and bind
+      window.addEventListener('scroll', setActiveSection, { passive: true });
+      window.addEventListener('resize', setActiveSection, { passive: true });
+      document.addEventListener('DOMContentLoaded', setActiveSection);
+    })();
+  </script>
+</html>
